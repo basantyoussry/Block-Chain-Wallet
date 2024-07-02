@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Receive Transaction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        #qr-code {
+            margin-top: 20px;
+        }
+        #wallet-address {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #333;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Receive Transaction</h1>
+    <div id="qr-code">
+        <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code">
+    </div>
+    <div id="wallet-address">
+        Wallet Address: {{ wallet_address }}
+    </div>
+    <button onclick="copyToClipboard('{{ wallet_address }}')">Copy Address</button>
+    <button onclick="shareQRCode()">Share QR Code</button>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Wallet address copied to clipboard');
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+
+        function shareQRCode() {
+            const qrImage = document.querySelector('#qr-code img');
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My Wallet QR Code',
+                    text: 'Scan this QR code to send funds to my wallet.',
+                    files: [new File([qrImage.src], 'qr-code.png', { type: qrImage.src.split(';')[0].split(':')[1] })]
+                }).then(() => {
+                    console.log('QR Code shared successfully');
+                }).catch((error) => {
+                    console.error('Error sharing QR Code:', error);
+                });
+            } else {
+                alert('Sharing not supported on this browser.');
+            }
+        }
+    </script>
+</body>
+</html>

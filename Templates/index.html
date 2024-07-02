@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Wallet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 1.2em;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Simple Wallet</h1>
+    <p>Current Balance: <span id="balance">{{ balance }}</span> USD</p>
+    
+    <button onclick="send_transaction()">Send</button>
+    <button onclick="receive_transaction()">Receive</button>
+    
+    <div id="qr-code"></div>
+    <div id="wallet-address"></div>
+
+    <script>
+        function receive_transaction() {
+            fetch('/receive')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('qr-code').innerHTML = '';
+                    document.getElementById('wallet-address').innerHTML = '';
+                    document.body.innerHTML = html;
+                });
+        }
+
+        function send_transaction() {
+            window.location.href = "/send_transaction";
+        }
+    </script>
+</body>
+</html>

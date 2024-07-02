@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Send Transaction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        #send-form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        input[type="text"], input[type="number"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h1>Simple Wallet</h1>
+    <p>Current Balance: <span id="balance">{{ balance }}</span> USD</p>
+    
+    <div id="send-form">
+        <h2>Send Transaction</h2>
+        <input type="text" id="wallet-address" placeholder="Recipient Wallet Address" required><br>
+        <input type="number" id="amount" placeholder="Amount to Send" required><br>
+        <button onclick="showPrivateKeyPrompt()">Send</button>
+    </div>
+
+    <script>
+        function showPrivateKeyPrompt() {
+            const walletAddress = document.getElementById('wallet-address').value;
+            const amount = document.getElementById('amount').value;
+            if (walletAddress === '' || amount === '') {
+                alert('Please fill in all fields.');
+                return;
+            }
+
+            const privateKey = prompt('Please enter your private key:');
+            if (privateKey) {
+                sendTransaction(walletAddress, amount, privateKey);
+            }
+        }
+
+        function sendTransaction(walletAddress, amount, privateKey) {
+            fetch('/send_transaction', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ wallet_address: walletAddress, amount: amount, private_key: privateKey })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+                    if (data.new_balance !== undefined) {
+                        document.getElementById('balance').textContent = data.new_balance;
+                    }
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
