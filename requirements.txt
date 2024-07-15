@@ -1,0 +1,7 @@
+Flask==2.3.3
+pymongo==4.3.3
+pyqrcode==1.2.1
+pypng==0.20220715.0
+solders==0.1.4
+solana==0.27.0
+rpc-solana-client==0.1.0
